@@ -2,7 +2,7 @@
 
  `npx hardhat node` : local chain서버를 시작
 
- cd 명령어로 vue 프로젝트로 이동
+ cd 명령어로 vue 프로젝트로 이동 후
  
  `yarn dev` : vue프로젝트 실행
 

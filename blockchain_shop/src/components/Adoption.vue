@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { log } from "console";
 import { onMounted, reactive } from "vue";
 import store from "../store";
 import { hexStringColorToRgba } from "../utils";
@@ -20,11 +21,37 @@ const dict = reactive({
       const color = colors[index % colors.length];
       return hexStringColorToRgba(color, 0.3);
     },
+    isAdopted: (index: number) => {
+      let adopterAddress = dict.data.adopterAddressList[index];
+      if (adopterAddress === "0x0000000000000000000000000000000000000000") {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    getButtonTextByIndex:(index: number) => {
+      return dict.functions.isAdopted(index) ? "Adopted" : "Adopt"; 
+    },
+    adoptAPet: async (index:number) => {
+        const contract = await store.dict.functions.getAdoptionContract();
+        const tx = await contract.adopt(index);
+        console.log('tx : ', tx);
+        
+    }
   },
 });
 const itemNumbersPerRow = 4;
 onMounted(async () => {
+  let contract = await store.dict.functions.getAdoptionContract();
   await dict.functions.updateAdopterAddressList();
+  // console.log(dict.data.adopterAddressList);
+
+  contract.on("APetGetAdopted",async (adopterAddress: string) => {
+    console.log('adopterAddress : ',adopterAddress);
+    //refresh함.
+    await dict.functions.updateAdopterAddressList();
+  })
+  
 });
 </script>
 
@@ -49,8 +76,14 @@ onMounted(async () => {
             ghost
             type="primary"
             size="small"
-            @click=""
+            :disabled="dict.functions.isAdopted(rowIndex * itemNumbersPerRow + ColumnIndex)"
+            @click="dict.functions.adoptAPet(rowIndex * itemNumbersPerRow + ColumnIndex)"
             >
+                {{
+                  dict.functions.getButtonTextByIndex(
+                    rowIndex * itemNumbersPerRow + ColumnIndex
+                  )
+                }}
             </a-button>
         </div>
     </a-col>

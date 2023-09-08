@@ -15,28 +15,30 @@ contract Adoption {
    string[] public petsList;
 
    //pet이 얼마나 있는지 count하는 함수
-   function getPetListLength() public constant returns (uint256 petCount) {
+   function getPetListLength() public view returns (uint256 petCount) {
       return petsList.length;
    }
 
    //존재하는지?
-   function isPetExists(string petName) public view returns (bool){
+   function isPetExists(string memory petName) public view returns (bool){
       // check if non-zero value in struct is zero
       // if it is zero then you know that myMapping[key] doesn't yet exist
-      if(petsMap[key].keyExists != 0){
+      if(petsMap[petName].keyExists != 0){
          return true;//존재합니다
       }
       return false; //존재하지 않음
    }
 
-   function addNewPet(string memory petName,uint256 entityData)
+   function addNewPet(string memory petName)
       public returns (bool success){
-         //revert : we will not add anything!!
-         if(!isPetExists(petName)) revert();
+         //petExists가 아니면, we will not add anything!!
+         if(!isPetExists(petName)) return false;
          //add로직
-         petsMap[key].keyExists = 1;
-         petsMap[key].listIndex = petsList.push(petName) - 1;
-         
+         petsMap[petName].keyExists = 1;
+         petsList.push(petName);
+         petsMap[petName].listIndex = petsList.length - 1;
+         // petsMap[petName].name = petName;
+
          return true;
    }
 

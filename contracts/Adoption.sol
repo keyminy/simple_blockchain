@@ -12,6 +12,7 @@ contract Adoption {
       address adopter; //입양자
    }
    //map의 key(string)은 petName이 옵니다
+
    mapping(string => PetStruct) public petsMap;
    string[] public petsList;
    address[16] public adopters;
@@ -34,9 +35,9 @@ contract Adoption {
 
    function addNewPet(string memory petName)
       public returns (bool success){
-         console.log("get in: add new pet function");
+         console.log("get in addNewPet %s",petName);
          //petExists가 아니면, we will not add anything!!
-         if(!isPetExists(petName)) return false;
+         if(isPetExists(petName)) return false;
          //add로직
          petsMap[petName].keyExists = 1;
          petsList.push(petName);
@@ -67,6 +68,9 @@ contract Adoption {
       petsList[indexToDelete] = elementToMove;
       petsMap[elementToMove].listIndex = indexToDelete;
       petsList.pop();
+      emit APetAdded(petName);
+
+      return true;
    }
 
 
@@ -92,6 +96,7 @@ contract Adoption {
     for(uint256 i=0; i < petsList.length; i++){
       tempList[i] = petsMap[petsList[i]];
     }
+
     return tempList;
    }
 }

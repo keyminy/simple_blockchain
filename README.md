@@ -1,3 +1,12 @@
+# 실행방법
+
+ `npx hardhat node` : local chain서버를 시작
+
+ cd 명령어로 vue 프로젝트로 이동
+ 
+ `yarn dev` : vue프로젝트 실행
+
+---
 # Typescript Solidity Dev Starter Kit
 
 _Updated to use Hardhat!_
